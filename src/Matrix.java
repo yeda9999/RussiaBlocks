@@ -158,7 +158,7 @@ public class Matrix {
 		}
 		for(int i=0;i<getRows();i++) {
 			for(int j=0;j<getCols();j++) {
-				if(i+y<m.getRows() && j+getX()<m.getCols()) {
+				if(i+getY()<m.getRows() && j+getX()<m.getCols()) {
 					mt.getMatrix()[i][j] = getMatrix()[i][j] + m.getMatrix()[i+getY()][j+getX()];
 				}
 			}
@@ -247,11 +247,27 @@ public class Matrix {
 	public synchronized void moveLeftIn(Matrix m) throws GameOverException {
 		// TODO Auto-generated method stub
 //		StdDraw.pause(50);
-		if(getX()>0) {
+		int s = getAcutalColStarts();
+		if(s<getX()) {
 			if (!checkIfCollisionIn(m)) {
 				setX(getX() - 1);
 			} else {
 				setX(getX() + 1);
+			}
+		} else {
+			//重新定位drop矩阵
+			setX(getX()+s);
+			if(s==0 && getX()==0) {
+				return;
+			}
+			for(int i=0;i<getRows();i++) {
+				for(int j=0;j<getCols();j++) {
+					if(j+s<getCols()) {
+						getMatrix()[i][j] = getMatrix()[i][j+s];
+					} else {
+						getMatrix()[i][j] = 0;
+					}
+				}
 			}
 		}
 	}
@@ -266,8 +282,19 @@ public class Matrix {
 		}
 	}
 
-	public int getAcutalCol() {
+	public int getAcutalColEnds() {
 		for(int i=getCols()-1;i>=0;i--) {
+			for(int j=0;j<getRows();j++) {
+				if(getMatrix()[j][i]>0) {
+					return i;
+				}
+			}
+		}
+		return 0;
+	}
+
+	public synchronized int getAcutalColStarts() {
+		for(int i=0;i<getCols();i++) {
 			for(int j=0;j<getRows();j++) {
 				if(getMatrix()[j][i]>0) {
 					return i;
@@ -280,7 +307,7 @@ public class Matrix {
 	public synchronized void moveRightIn(Matrix m) throws GameOverException {
 		// TODO Auto-generated method stub
 //		StdDraw.pause(50);
-		if(getX()+getAcutalCol()<m.getCols()-1) {
+		if(getX()+ getAcutalColEnds()<m.getCols()-1) {
 			if (!checkIfCollisionIn(m)) {
 				setX(getX() + 1);
 			} else {
