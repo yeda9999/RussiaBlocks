@@ -7,6 +7,16 @@ import edu.princeton.cs.algs4.StdDraw;
 public class DropDown implements Runnable {
 	
 	private Matrix dropdown;
+
+	public synchronized Matrix getM() {
+		return m;
+	}
+
+	public synchronized void setM(Matrix m) {
+		this.m = m;
+	}
+
+	private Matrix m;
 	
 	public synchronized Matrix getDropdown() {
 		return dropdown;
@@ -34,41 +44,42 @@ public class DropDown implements Runnable {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		
+
 		int[] blocktypes = {Matrix.BlockType.L,Matrix.BlockType.I,Matrix.BlockType.Z};
 		Random r = new Random();
-		Matrix m = null;
+
 		while(true) {
-			dropdown.moveDownIn(background);
-			if(!dropdown.checkIfCollisionIn(background)) {
-				m = background.unionInnerMatrix(dropdown);
+			getDropdown().moveDownIn(getBackground());
+			if(!getDropdown().checkIfCollisionIn(getBackground())) {
+				m = getBackground().unionInnerMatrix(getDropdown());
 				m.draw();
 			} else {
-				background = m;
-				background.draw();
+				setBackground(m);
+				getBackground().draw();
 				
-				List<Integer> checkIfHasHLineFull = background.checkIfHasHLineFull();
+				List<Integer> checkIfHasHLineFull = getBackground().checkIfHasHLineFull();
 				
 				if(checkIfHasHLineFull.size()>0) {
 					for(int i=0;i<checkIfHasHLineFull.size();i++) {
 						
 						for(int j=0;j<RussiaBlockClient.COLS;j++) {
-							background.getMatrix()[checkIfHasHLineFull.get(i)][j] = 0;
+							getBackground().getMatrix()[checkIfHasHLineFull.get(i)][j] = 0;
 						}
-						background.draw();
+						getBackground().draw();
 						StdDraw.pause(200);
-						dropdown = background.split(0, checkIfHasHLineFull.get(i), 0, RussiaBlockClient.COLS);
-						background = background.exclude(dropdown);
-						dropdown.moveDownIn(background);
-						m = background.unionInnerMatrix(dropdown);
+						setDropdown(getBackground().split(0, checkIfHasHLineFull.get(i), 0, RussiaBlockClient.COLS));
+						setBackground(getBackground().exclude(getDropdown()));
+						getDropdown().moveDownIn(getBackground());
+						m = getBackground().unionInnerMatrix(getDropdown());
 						
-						background = m;
-						background.draw();
+						setBackground(m);
+						getBackground().draw();
 					}
 					//dropdown = 
 					//background =
 				}
-				dropdown = Matrix.genBlock(blocktypes[r.nextInt(blocktypes.length)], RussiaBlockClient.DROPX, RussiaBlockClient.DROPY, RussiaBlockClient.DROPROWS, RussiaBlockClient.DROPCOLS);
+				m = getBackground();
+				setDropdown(Matrix.genBlock(blocktypes[r.nextInt(blocktypes.length)], RussiaBlockClient.DROPX, RussiaBlockClient.DROPY, RussiaBlockClient.DROPROWS, RussiaBlockClient.DROPCOLS));
 			}
 
 			try {

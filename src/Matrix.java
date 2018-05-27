@@ -26,11 +26,11 @@ public class Matrix {
 	private int[][] matrix;
 	
 	private int x;
-	public  int getX() {
+	public synchronized  int getX() {
 		return x;
 	}
 
-	public  void setX(int x) {
+	public synchronized  void setX(int x) {
 		this.x = x;
 	}
 
@@ -42,7 +42,7 @@ public class Matrix {
 		this.y = y;
 	}
 
-	private volatile int y;
+	private int y;
 	
 	private int rows;
 	public int[][] getMatrix() {
@@ -83,9 +83,9 @@ public class Matrix {
 
 	public String toString() {
 		String s = "";
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				s += matrix[i][j] + "\t";
+		for (int i = 0; i < getRows(); i++) {
+			for (int j = 0; j < getCols(); j++) {
+				s += getMatrix()[i][j] + "\t";
 			}
 			s += "\n";
 		}
@@ -94,13 +94,13 @@ public class Matrix {
 	}
 
 	public synchronized void rotate90NSZ() {
-		Matrix mp= new Matrix(x,getY(),rows,cols);
+		Matrix mp= new Matrix(getX(),getY(),getRows(),getCols());
 		for (int i = 0; i < mp.getRows(); i++) {
 			for (int j = 0; j < mp.getCols(); j++) {
-				mp.getMatrix()[i][j] = matrix[matrix.length - j - 1][i];
+				mp.getMatrix()[i][j] = getMatrix()[getMatrix().length - j - 1][i];
 			}
 		}
-		matrix = mp.getMatrix();
+		setMatrix(mp.getMatrix());
 	}
 
 	public static void main(String[] args) {
@@ -118,10 +118,10 @@ public class Matrix {
 
 		Random r = new Random();
 
-		for (int i = 0; i < matrix.length; i++) {
-			for (int j = 0; j < matrix[0].length; j++) {
+		for (int i = 0; i < getMatrix().length; i++) {
+			for (int j = 0; j < getMatrix()[0].length; j++) {
 				if (r.nextDouble() > 0.5) {
-					matrix[i][j] = 1;
+					getMatrix()[i][j] = 1;
 				}
 			}
 		}
@@ -137,17 +137,17 @@ public class Matrix {
 	 * @return
 	 */
 	public Matrix unionInnerMatrix(Matrix m) {
-		Matrix mt = new Matrix(getX(), y, rows, cols);
-		if(rows < m.getY() || cols < m.getX()) {
+		Matrix mt = new Matrix(getX(), getY(), getRows(), getCols());
+		if(getRows() < m.getY() || getCols() < m.getX()) {
 			//TODO out of range.
 		}
-		for(int i=0;i<rows;i++) {
-			for(int j=0;j<cols;j++) {
+		for(int i=0;i<getRows();i++) {
+			for(int j=0;j<getCols();j++) {
 				if(i>=m.getY() && i<m.getY()+m.getRows()
 						&& j>=m.getX() && j<m.getX()+m.getCols()) {
-					mt.getMatrix()[i][j] = matrix[i][j] + m.getMatrix()[i-m.getY()][j-m.getX()];
+					mt.getMatrix()[i][j] = getMatrix()[i][j] + m.getMatrix()[i-m.getY()][j-m.getX()];
 				} else {
-					mt.getMatrix()[i][j] = matrix[i][j];
+					mt.getMatrix()[i][j] = getMatrix()[i][j];
 				}
 				if(mt.getMatrix()[i][j]>1) {
 					System.out.println("collion");
@@ -159,14 +159,14 @@ public class Matrix {
 	}
 	
 	public Matrix unionOuterMatrix(Matrix m) {
-		Matrix mt = new Matrix(getX(), y, rows, cols);
-		if(rows+y > m.getRows() || cols+getX() > m.getCols()) {
+		Matrix mt = new Matrix(getX(), getY(), getRows(), getCols());
+		if(getRows()+getY() > m.getRows() || getCols()+getX() > m.getCols()) {
 			//TODO out of range.
 		}
-		for(int i=0;i<rows;i++) {
-			for(int j=0;j<cols;j++) {
+		for(int i=0;i<getRows();i++) {
+			for(int j=0;j<getCols();j++) {
 				if(i+y<m.getRows() && j+getX()<m.getCols()) {
-					mt.getMatrix()[i][j] = matrix[i][j] + m.getMatrix()[i+y][j+getX()];
+					mt.getMatrix()[i][j] = getMatrix()[i][j] + m.getMatrix()[i+y][j+getX()];
 				}
 			}
 		}
@@ -240,49 +240,50 @@ public class Matrix {
 	public void draw() {
 		System.out.println(this);
 		StdDraw.clear();
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				if(matrix[i][j]==1) {
-					if(blockType==BlockType.U) {
+		for (int i = 0; i < getRows(); i++) {
+			for (int j = 0; j < getCols(); j++) {
+				if(getMatrix()[i][j]==1) {
+					if(getBlockType()==BlockType.U) {
 //						StdDraw.picture(x+j, RussiaBlockClient.ROWS-y-i, "ground.jpg", 1, 1);
-						StdDraw.picture(x+j, RussiaBlockClient.ROWS-y-i, "block.jpg", 1, 1);
+						StdDraw.picture(getX()+j, RussiaBlockClient.ROWS-getY()-i, "ground.jpg", 1, 1);
 					} else {
-						StdDraw.picture(x+j, RussiaBlockClient.ROWS-y-i, "block.jpg", 1, 1);
+						StdDraw.picture(getX()+j, RussiaBlockClient.ROWS-getY()-i, "block.jpg", 1, 1);
 					}
 					
 				}
 			}
 		}
-		StdDraw.show(10);
+		StdDraw.show(5);
 	}
 
 	public synchronized void moveLeftIn(Matrix m) {
 		// TODO Auto-generated method stub
+		StdDraw.pause(50);
 		if(!checkIfCollisionIn(m)) {
-			x -= 1;
+			setX(getX()-1);
 		} else {
-			x += 1;
+			setX(getX()+1);
 		}
 		
 	}
 
 	public synchronized void moveDownIn(Matrix m) {
 		// TODO Auto-generated method stub
-		synchronized (this) {
-			if(!checkIfCollisionIn(m)) {
-				y += 1;
-			} else {
-				y -= 1;
-			}
+		StdDraw.pause(100);
+		if(!checkIfCollisionIn(m)) {
+			setY(getY()+1);
+		} else {
+			setY(getY()-1);
 		}
 	}
 
 	public synchronized void moveRightIn(Matrix m) {
 		// TODO Auto-generated method stub
+		StdDraw.pause(50);
 		if(!checkIfCollisionIn(m)) {
-			x += 1;
+			setX(getX()+1);
 		} else {
-			x -= 1;
+			setX(getX()-1);
 		}
 	}
 	
@@ -333,7 +334,7 @@ public class Matrix {
 		Matrix ma = genBlock(BlockType.U, startrow, startcol, endrow-startrow, endcol-startcol);
 		for (int i = startrow; i < endrow  ; i++) {
 			for (int j = startcol; j < endcol; j++) {
-				ma.getMatrix()[i-startrow][j-startcol] = matrix[i][j];
+				ma.getMatrix()[i-startrow][j-startcol] = getMatrix()[i][j];
 			}
 		}
 		return ma;
