@@ -52,6 +52,8 @@ public class RussiaBlockClient {
 					List<Integer> checkIfHasHLineFull = dd.getBackground().checkIfHasHLineFull();
 
 					if (checkIfHasHLineFull.size() > 0) {
+
+						//TODO 只要没消掉最下面一行，总是会有问题
 						for (int i = 0; i < checkIfHasHLineFull.size(); i++) {
 
 							for (int j = 0; j < RussiaBlockClient.COLS; j++) {

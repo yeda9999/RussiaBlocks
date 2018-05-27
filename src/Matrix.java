@@ -126,14 +126,7 @@ public class Matrix {
 			}
 		}
 	}
-	
-	/**
-	 * this.x,this.y==0
-	 * suppose x>0
-	 * suppose y>0
-	 * @param m
-	 * @return
-	 */
+
 	public Matrix unionInnerMatrix(Matrix m) {
 		Matrix mt = new Matrix(getX(), getY(), getRows(), getCols());
 		if(getRows() < m.getY() || getCols() < m.getX()) {
@@ -170,12 +163,7 @@ public class Matrix {
 		}
 		return mt;
 	}
-	
-	/**
-	 * by default 3*3
-	 * @param blockType
-	 * @return
-	 */
+
 	public static Matrix genBlock(int blockType, int x, int y, int rows, int cols) {
 		Matrix mt = null;
 		switch(blockType) {
@@ -243,9 +231,9 @@ public class Matrix {
 				if(getMatrix()[i][j]==1) {
 					if(getBlockType()==BlockType.U) {
 //						StdDraw.picture(x+j, RussiaBlockClient.ROWS-y-i, "ground.jpg", 1, 1);
-						StdDraw.picture(getX()+j, RussiaBlockClient.ROWS-getY()-i, "ground.jpg", 1, 1);
+						StdDraw.picture(getX()+j+0.5, RussiaBlockClient.ROWS-getY()-i-0.5, "ground.jpg", 1, 1);
 					} else {
-						StdDraw.picture(getX()+j, RussiaBlockClient.ROWS-getY()-i, "block.jpg", 1, 1);
+						StdDraw.picture(getX()+j+0.5, RussiaBlockClient.ROWS-getY()-i-0.5, "block.jpg", 1, 1);
 					}
 					
 				}
@@ -276,10 +264,21 @@ public class Matrix {
 		}
 	}
 
+	public int getAcutalCol() {
+		for(int i=getCols()-1;i>=0;i--) {
+			for(int j=0;j<getRows();j++) {
+				if(getMatrix()[j][i]>0) {
+					return i;
+				}
+			}
+		}
+		return 0;
+	}
+
 	public synchronized void moveRightIn(Matrix m) {
 		// TODO Auto-generated method stub
 //		StdDraw.pause(50);
-		if(getX()<m.getCols()-1) {
+		if(getX()+getAcutalCol()<m.getCols()-1) {
 			if (!checkIfCollisionIn(m)) {
 				setX(getX() + 1);
 			} else {
@@ -322,15 +321,7 @@ public class Matrix {
 		
 		return list;
 	}
-	
-	/**
-	 * ����
-	 * @param startrow
-	 * @param endrow
-	 * @param startcol
-	 * @param endcol
-	 * @return
-	 */
+
 	public Matrix split(int startrow, int endrow, int startcol,int endcol) {
 		Matrix ma = genBlock(BlockType.U, startrow, startcol, endrow-startrow, endcol-startcol);
 		for (int i = startrow; i < endrow  ; i++) {
@@ -340,12 +331,7 @@ public class Matrix {
 		}
 		return ma;
 	}
-	
-	/**
-	 * ����û�����õ�
-	 * @param smallOne
-	 * @return
-	 */
+
 	public Matrix exclude(Matrix smallOne) {
 		Matrix ma = genBlock(BlockType.U, getX(), getY(), getRows(), getCols());
 		for(int i=smallOne.getY();i<smallOne.getRows();i++) {
