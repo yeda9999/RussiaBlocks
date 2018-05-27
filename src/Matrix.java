@@ -149,15 +149,17 @@ public class Matrix {
 		return mt;
 	}
 	
-	public Matrix unionOuterMatrix(Matrix m) {
+	public Matrix unionOuterMatrix(Matrix m) throws GameOverException {
 		Matrix mt = new Matrix(getX(), getY(), getRows(), getCols());
-		if(getRows()+getY() > m.getRows() || getCols()+getX() > m.getCols()) {
+		if(getY()<0) {
 			//TODO out of range.
+
+			throw new GameOverException();
 		}
 		for(int i=0;i<getRows();i++) {
 			for(int j=0;j<getCols();j++) {
 				if(i+y<m.getRows() && j+getX()<m.getCols()) {
-					mt.getMatrix()[i][j] = getMatrix()[i][j] + m.getMatrix()[i+y][j+getX()];
+					mt.getMatrix()[i][j] = getMatrix()[i][j] + m.getMatrix()[i+getY()][j+getX()];
 				}
 			}
 		}
@@ -242,7 +244,7 @@ public class Matrix {
 		StdDraw.show(5);
 	}
 
-	public synchronized void moveLeftIn(Matrix m) {
+	public synchronized void moveLeftIn(Matrix m) throws GameOverException {
 		// TODO Auto-generated method stub
 //		StdDraw.pause(50);
 		if(getX()>0) {
@@ -254,7 +256,7 @@ public class Matrix {
 		}
 	}
 
-	public synchronized void moveDownIn(Matrix m) {
+	public synchronized void moveDownIn(Matrix m) throws GameOverException {
 		// TODO Auto-generated method stub
 //		StdDraw.pause(100);
 		if(!checkIfCollisionIn(m)) {
@@ -275,7 +277,7 @@ public class Matrix {
 		return 0;
 	}
 
-	public synchronized void moveRightIn(Matrix m) {
+	public synchronized void moveRightIn(Matrix m) throws GameOverException {
 		// TODO Auto-generated method stub
 //		StdDraw.pause(50);
 		if(getX()+getAcutalCol()<m.getCols()-1) {
@@ -287,7 +289,7 @@ public class Matrix {
 		}
 	}
 	
-	public boolean checkIfCollisionIn(Matrix m) {
+	public boolean checkIfCollisionIn(Matrix m) throws GameOverException {
 		Matrix unionOuterMatrix = unionOuterMatrix(m);
 		for(int i=0;i<unionOuterMatrix.getRows();i++) {
 			for(int j=0;j<unionOuterMatrix.getCols();j++) {
@@ -334,9 +336,13 @@ public class Matrix {
 
 	public Matrix exclude(Matrix smallOne) {
 		Matrix ma = genBlock(BlockType.U, getX(), getY(), getRows(), getCols());
-		for(int i=smallOne.getY();i<smallOne.getRows();i++) {
-			for(int j=smallOne.getX();j<smallOne.getCols();j++) {
-				getMatrix()[i][j] = 0;
+		for(int i=0;i<getRows();i++) {
+			for(int j=0;j<getCols();j++) {
+				if(i<smallOne.getY() || i>smallOne.getY()+smallOne.getRows()
+						|| j<smallOne.getX() || j>smallOne.getX()+smallOne.getCols()) {
+					ma.getMatrix()[i][j] = getMatrix()[i][j];
+				}
+
 			}
 		}
 		return ma;

@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.List;
 import java.util.Random;
 
@@ -47,47 +48,55 @@ public class DropDown implements Runnable {
 
 		int[] blocktypes = {Matrix.BlockType.L,Matrix.BlockType.I,Matrix.BlockType.Z};
 		Random r = new Random();
-
+		try {
 		while(true) {
-			getDropdown().moveDownIn(getBackground());
-			if(!getDropdown().checkIfCollisionIn(getBackground())) {
-				m = getBackground().unionInnerMatrix(getDropdown());
-				m.draw();
-			} else {
-				setBackground(m);
-				getBackground().draw();
-				
-				List<Integer> checkIfHasHLineFull = getBackground().checkIfHasHLineFull();
-				
-				if(checkIfHasHLineFull.size()>0) {
-					for(int i=0;i<checkIfHasHLineFull.size();i++) {
-						
-						for(int j=0;j<RussiaBlockClient.COLS;j++) {
-							getBackground().getMatrix()[checkIfHasHLineFull.get(i)][j] = 0;
-						}
-						getBackground().draw();
-						StdDraw.pause(200);
-						setDropdown(getBackground().split(0, checkIfHasHLineFull.get(i), 0, RussiaBlockClient.COLS));
-						setBackground(getBackground().exclude(getDropdown()));
-						getDropdown().moveDownIn(getBackground());
-						m = getBackground().unionInnerMatrix(getDropdown());
-						
-						setBackground(m);
-						getBackground().draw();
-					}
-					//dropdown = 
-					//background =
-				}
-				m = getBackground();
-				setDropdown(Matrix.genBlock(blocktypes[r.nextInt(blocktypes.length)], RussiaBlockClient.DROPX, RussiaBlockClient.DROPY, RussiaBlockClient.DROPROWS, RussiaBlockClient.DROPCOLS));
-			}
 
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				getDropdown().moveDownIn(getBackground());
+				if (!getDropdown().checkIfCollisionIn(getBackground())) {
+					m = getBackground().unionInnerMatrix(getDropdown());
+					m.draw();
+				} else {
+					setBackground(m);
+					getBackground().draw();
+
+					List<Integer> checkIfHasHLineFull = getBackground().checkIfHasHLineFull();
+
+					if (checkIfHasHLineFull.size() > 0) {
+						for (int i = 0; i < checkIfHasHLineFull.size(); i++) {
+
+							for (int j = 0; j < RussiaBlockClient.COLS; j++) {
+								getBackground().getMatrix()[checkIfHasHLineFull.get(i)][j] = 0;
+							}
+							getBackground().draw();
+							StdDraw.pause(200);
+							setDropdown(getBackground().split(0, checkIfHasHLineFull.get(i), 0, RussiaBlockClient.COLS));
+							setBackground(getBackground().exclude(getDropdown()));
+							getDropdown().moveDownIn(getBackground());
+							m = getBackground().unionInnerMatrix(getDropdown());
+
+							setBackground(m);
+							getBackground().draw();
+						}
+						//dropdown =
+						//background =
+					}
+					m = getBackground();
+					setDropdown(Matrix.genBlock(blocktypes[r.nextInt(blocktypes.length)], RussiaBlockClient.DROPX, RussiaBlockClient.DROPY, RussiaBlockClient.DROPROWS, RussiaBlockClient.DROPCOLS));
+				}
+
+				try {
+					Thread.sleep(RussiaBlockClient.SPEED);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
+		}catch (GameOverException e) {
+			StdDraw.clear();
+			StdDraw.setPenColor(Color.RED);
+			StdDraw.setPenRadius(2);
+			StdDraw.text(RussiaBlockClient.COLS/2,RussiaBlockClient.ROWS/2,"GAME OVER");
+			StdDraw.show();
 		}
 	}
 
