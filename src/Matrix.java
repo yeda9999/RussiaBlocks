@@ -128,11 +128,9 @@ public class Matrix {
 	}
 	
 	/**
-	 * �����ǵ�̫�����ˣ�ֻ�ڵ�ǰ����ʹ��
 	 * this.x,this.y==0
-	 * x>0
-	 * y>0
-	 * �����>1�ĵ� ˵����ײ
+	 * suppose x>0
+	 * suppose y>0
 	 * @param m
 	 * @return
 	 */
@@ -258,18 +256,19 @@ public class Matrix {
 
 	public synchronized void moveLeftIn(Matrix m) {
 		// TODO Auto-generated method stub
-		StdDraw.pause(50);
-		if(!checkIfCollisionIn(m)) {
-			setX(getX()-1);
-		} else {
-			setX(getX()+1);
+//		StdDraw.pause(50);
+		if(getX()>0) {
+			if (!checkIfCollisionIn(m)) {
+				setX(getX() - 1);
+			} else {
+				setX(getX() + 1);
+			}
 		}
-		
 	}
 
 	public synchronized void moveDownIn(Matrix m) {
 		// TODO Auto-generated method stub
-		StdDraw.pause(100);
+//		StdDraw.pause(100);
 		if(!checkIfCollisionIn(m)) {
 			setY(getY()+1);
 		} else {
@@ -279,11 +278,13 @@ public class Matrix {
 
 	public synchronized void moveRightIn(Matrix m) {
 		// TODO Auto-generated method stub
-		StdDraw.pause(50);
-		if(!checkIfCollisionIn(m)) {
-			setX(getX()+1);
-		} else {
-			setX(getX()-1);
+//		StdDraw.pause(50);
+		if(getX()<m.getCols()-1) {
+			if (!checkIfCollisionIn(m)) {
+				setX(getX() + 1);
+			} else {
+				setX(getX() - 1);
+			}
 		}
 	}
 	

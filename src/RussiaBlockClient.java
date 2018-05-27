@@ -21,8 +21,8 @@ public class RussiaBlockClient {
 		
 		StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.setXscale(0, COLS);
-        StdDraw.setYscale(0, ROWS);   
-        
+        StdDraw.setYscale(0, ROWS);
+
 		Matrix drop = Matrix.genBlock(Matrix.BlockType.I,DROPX, DROPY, DROPROWS, DROPCOLS);
 		Matrix background = Matrix.genBlock(Matrix.BlockType.U,0, 0, ROWS, COLS);
 		DropDown dd = new DropDown(drop, background);
@@ -87,7 +87,7 @@ public class RussiaBlockClient {
 				dd.setM(dd.getBackground().unionInnerMatrix(dd.getDropdown()));
 				dd.getM().draw();
 			}
-			StdDraw.pause(200);
+			StdDraw.pause(100);
 		}
 	}
 }
