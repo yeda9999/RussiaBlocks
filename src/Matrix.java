@@ -11,6 +11,8 @@ public class Matrix {
 		static final int Z = 2;
 		static final int I = 1;
 		static final int U = 0;
+		static final int FL = 4;
+		static final int FZ = 8;
 	}
 	
 	int blockType;
@@ -185,6 +187,14 @@ public class Matrix {
 			mt = genBlockU(x, y, rows, cols);
 			mt.setBlockType(BlockType.U);
 			break;
+		case BlockType.FZ :
+			mt = genBlockFZ(x, y, rows, cols);
+			mt.setBlockType(BlockType.FZ);
+			break;
+		case BlockType.FL :
+			mt = genBlockFL(x, y, rows, cols);
+			mt.setBlockType(BlockType.FL);
+			break;
 		}
 		
 		return mt;
@@ -215,12 +225,31 @@ public class Matrix {
 		m.getMatrix()[1][2] = 1;
 		return m;
 	}
+
+	private static Matrix genBlockFZ(int x, int y, int rows, int cols) {
+		Matrix m = new Matrix(x,y,rows,cols);
+		m.getMatrix()[0][1] = 1;
+		m.getMatrix()[0][2] = 1;
+		m.getMatrix()[1][1] = 1;
+		m.getMatrix()[1][0] = 1;
+		return m;
+	}
+
 	
 	private static Matrix genBlockL(int x, int y, int rows, int cols) {
 		Matrix m = new Matrix(x,y,rows,cols);
 		m.getMatrix()[0][0] = 1;
 		m.getMatrix()[1][0] = 1;
 		m.getMatrix()[2][0] = 1;
+		m.getMatrix()[2][1] = 1;
+		return m;
+	}
+
+	private static Matrix genBlockFL(int x, int y, int rows, int cols) {
+		Matrix m = new Matrix(x,y,rows,cols);
+		m.getMatrix()[0][0] = 1;
+		m.getMatrix()[0][1] = 1;
+		m.getMatrix()[1][1] = 1;
 		m.getMatrix()[2][1] = 1;
 		return m;
 	}
@@ -231,13 +260,11 @@ public class Matrix {
 		for (int i = 0; i < getRows(); i++) {
 			for (int j = 0; j < getCols(); j++) {
 				if(getMatrix()[i][j]==1) {
-					if(getBlockType()==BlockType.U) {
-//						StdDraw.picture(x+j, RussiaBlockClient.ROWS-y-i, "ground.jpg", 1, 1);
-						StdDraw.picture(getX()+j+0.5, RussiaBlockClient.ROWS-getY()-i-0.5, "ground.jpg", 1, 1);
+					if(getRows()-1 == i) {
+						StdDraw.picture(getX()+j+0.5, RussiaBlockClient.ROWS-getY()-i-0.5, "russiaground.png", 1, 1);
 					} else {
-						StdDraw.picture(getX()+j+0.5, RussiaBlockClient.ROWS-getY()-i-0.5, "block.jpg", 1, 1);
+						StdDraw.picture(getX()+j+0.5, RussiaBlockClient.ROWS-getY()-i-0.5, "russiablock.png", 1, 1);
 					}
-					
 				}
 			}
 		}

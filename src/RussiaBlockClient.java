@@ -30,15 +30,10 @@ public class RussiaBlockClient {
 		DropDown dd = new DropDown(drop, background);
 		new Thread(dd).start();
 //		Matrix m = null;
-		int[] blocktypes = {Matrix.BlockType.L, Matrix.BlockType.I, Matrix.BlockType.Z};
+		int[] blocktypes = {Matrix.BlockType.L, Matrix.BlockType.I, Matrix.BlockType.Z, Matrix.BlockType.FZ, Matrix.BlockType.FL};
 		Random r = new Random();
 		try {
-		while (true) {
-
-
-
-//			drop = dd.getDropdown();
-//			background = dd.getBackground();
+			while (true) {
 				if (StdDraw.isKeyPressed(KeyEvent.VK_A)) {
 					dd.getDropdown().moveLeftIn(dd.getBackground());
 
